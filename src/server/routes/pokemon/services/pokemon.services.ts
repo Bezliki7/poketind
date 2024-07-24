@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 
+import { prisma } from '@server/utils/prisma';
 import { fetchResolver } from '@utils/fetch';
 
 import { BASE_URL, POKEMONS_COUNT } from '../pokemon.constant';
@@ -10,7 +11,7 @@ export class PokemonService {
   private readonly db: PrismaClient;
 
   constructor() {
-    this.db = new PrismaClient();
+    this.db = prisma;
     this.initDb();
   }
 
@@ -55,5 +56,13 @@ export class PokemonService {
     } else {
       await this.db.pokemon.update({ where: { id }, data: { dislikes: { decrement: 1 } } });
     }
+  }
+
+  public async getPokemons() {
+    const pokemons = await this.db.pokemon.findMany({
+      orderBy: { likes: 'desc' }
+    });
+
+    return pokemons;
   }
 }

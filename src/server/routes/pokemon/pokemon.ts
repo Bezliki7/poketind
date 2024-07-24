@@ -13,5 +13,8 @@ export const pokemonRouter = router({
   }),
   ratePokeon: procedure.input(ratePokemonSchema).mutation(async (opts) => {
     await pokemon.ratePokemon(opts.input.id, opts.input.rate);
+  }),
+  getPokemons: procedure.query(async () => {
+    return await pokemon.getPokemons();
   })
 });
