@@ -1,3 +1,5 @@
+import { Pokemon as BasePokemon } from '@prisma/client';
+
 export type Pokemon = {
   id: number;
   name: string;
@@ -5,3 +7,7 @@ export type Pokemon = {
     front_default: string;
   };
 };
+
+export type GetPokemonResponsePayload = (BasePokemon & {
+  percentRate: number;
+})[];

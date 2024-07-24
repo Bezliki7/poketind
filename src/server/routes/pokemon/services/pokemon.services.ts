@@ -5,7 +5,7 @@ import { fetchResolver } from '@utils/fetch';
 
 import { BASE_URL, POKEMONS_COUNT } from '../pokemon.constant';
 
-import type { Pokemon } from '../pokemon.interface';
+import type { GetPokemonResponsePayload, Pokemon } from '../pokemon.interface';
 
 export class PokemonService {
   private readonly db: PrismaClient;
@@ -58,11 +58,29 @@ export class PokemonService {
     }
   }
 
-  public async getPokemons() {
-    const pokemons = await this.db.pokemon.findMany({
-      orderBy: { likes: 'desc' }
-    });
+  public async getPokemons(): Promise<GetPokemonResponsePayload> {
+    const pokemons = await this.db.pokemon.findMany();
 
-    return pokemons;
+    const pokemonWithPercentRate = pokemons
+      .map((pokemon) => {
+        const rateSum = pokemon.dislikes + pokemon.likes;
+        const percentRate = rateSum ? Math.round(pokemon.likes / rateSum) * 100 : 0;
+
+        return {
+          ...pokemon,
+          percentRate
+        };
+      })
+      .sort((a, b) => {
+        const aRateSum = a.dislikes + a.likes;
+        const bRateSum = b.dislikes + b.likes;
+
+        if (a.percentRate === b.percentRate) {
+          return bRateSum < aRateSum ? -1 : bRateSum > aRateSum ? 1 : 0;
+        }
+        return b.percentRate - a.percentRate;
+      });
+
+    return pokemonWithPercentRate;
   }
 }

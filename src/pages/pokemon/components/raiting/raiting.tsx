@@ -45,8 +45,9 @@ const Rating = () => {
               </div>
 
               <div className='flex flex-col'>
-                <span>likes: {pokemon.likes}</span>
-                <span>dislikes: {pokemon.dislikes}</span>
+                <span>Likes: {pokemon.likes}</span>
+                <span>Dislikes: {pokemon.dislikes}</span>
+                <span>Percent rate: {pokemon.percentRate}%</span>
               </div>
             </div>
           </div>
