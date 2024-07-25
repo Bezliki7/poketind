@@ -1,22 +1,24 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import type { Pokemon as BasePokemon } from '@prisma/client';
-
 import { POKEMONS_COUNT } from '@server/routes/pokemon/pokemon.constant';
 
 import { trpc } from '@utils/trps';
 import { getRandomInt } from '@utils/math';
 import { Button } from '@components';
 
-const Pokemon = (props: Partial<BasePokemon>) => {
+import type { PokemonProps } from './pokemon.interface';
+
+const Pokemon = ({ pokemon }: PokemonProps) => {
   const randomInt = getRandomInt(POKEMONS_COUNT);
-  const { data: pokemon } = trpc.pokemon.getPokemon.useQuery({ id: props?.id ?? randomInt });
+  const { data: randomPokemon } = trpc.pokemon.getPokemon.useQuery({ id: randomInt });
   const ratePokemonQuery = trpc.pokemon.ratePokeon.useMutation();
 
+  const currentPokemon = pokemon ?? randomPokemon;
+
   const handleRate = (rate: 'like' | 'dislike') => {
-    if (pokemon?.id) {
-      ratePokemonQuery.mutate({ id: pokemon?.id, rate });
+    if (currentPokemon?.id) {
+      ratePokemonQuery.mutate({ id: currentPokemon.id, rate });
     }
   };
 
@@ -24,17 +26,20 @@ const Pokemon = (props: Partial<BasePokemon>) => {
     <section className='flex h-screen justify-center items-center flex-col'>
       <div className='h-auto w-100 p-4 rounded-lg bg-gray-800'>
         <div className='flex justify-between'>
-          <h2 className='h-2 capitalize'>{pokemon?.name}</h2> <span>#{pokemon?.id}</span>
+          <h2 className='h-2 capitalize'>{currentPokemon?.name ?? 'pokemon'}</h2>
+          <span>#{currentPokemon?.id ?? 0}</span>
         </div>
 
-        {pokemon?.image && (
+        {currentPokemon?.image ? (
           <Image
-            src={pokemon?.image}
+            src={currentPokemon?.image}
             className='bg-gray-800'
             alt='pokemon'
             width={300}
             height={300}
           />
+        ) : (
+          <div style={{ width: 300, height: 300 }} />
         )}
 
         <div className='flex gap-3'>

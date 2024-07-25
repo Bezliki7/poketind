@@ -21,7 +21,7 @@ export async function getStaticProps({ params }: { params: { id: string } }) {
 }
 
 const PokemonWrapper = (props: { pokemon: BasePokemon }) => {
-  return <Pokemon {...props.pokemon} />;
+  return <Pokemon {...props} />;
 };
 
 export default PokemonWrapper;

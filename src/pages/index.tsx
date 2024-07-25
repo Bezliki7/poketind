@@ -1,5 +1,5 @@
 import { trpc } from '../utils/trps';
-import Pokemon from './pokemon';
+import Pokemon from './pokemon/components/pokemon/pokemon';
 
 export default function IndexPage() {
   const hello = trpc.pokemon.getPokemon.useQuery({ id: 1 });
