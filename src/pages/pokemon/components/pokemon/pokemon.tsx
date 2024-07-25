@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { ToastContainer, toast } from 'react-toastify';
 
 import { POKEMONS_COUNT } from '@server/routes/pokemon/pokemon.constant';
 
@@ -17,7 +18,9 @@ const Pokemon = ({ pokemon }: PokemonProps) => {
   const currentPokemon = pokemon ?? randomPokemon;
 
   const handleRate = (rate: 'like' | 'dislike') => {
-    if (currentPokemon?.id) {
+    if (currentPokemon?.id && currentPokemon?.name) {
+      toast(`You rate pokemon ${currentPokemon.name} ✨`);
+
       ratePokemonQuery.mutate({ id: currentPokemon.id, rate });
     }
   };
@@ -45,6 +48,7 @@ const Pokemon = ({ pokemon }: PokemonProps) => {
         <div className='flex gap-3'>
           <Button onClick={() => handleRate('like')}>Like</Button>
           <Button onClick={() => handleRate('dislike')}>Dislike</Button>
+          <ToastContainer style={{ textTransform: 'capitalize' }} theme='dark' />
         </div>
       </div>
 
